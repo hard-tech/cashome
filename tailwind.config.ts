@@ -29,17 +29,17 @@ module.exports = {
     themes: {
       light: {
         colors: {
-          default: "#E1F5FE",
+          // default: "#E1F5FE",
           primary: "#2563eb",
-          secondary: "#01579B",
+          secondary: "#0288D1",
         },
       },
       dark: {
         colors: {
-          default: "#E1F5FE",
+          // default: "#1A1A1A",
           primary: "#2563eb",
           secondary: "#0288D1",
-          background: "#1A1A1A",
+          // background: "#1A1A1A",
         },
       },
     },
