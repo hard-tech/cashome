@@ -12,9 +12,10 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
+  username  String   @unique
   password  String
+  firstName      String
+  lastName      String
   role      Role     @default(MEMBER)
   balance   Float    @default(0)
   household Household @relation(fields: [householdId], references: [id])
@@ -22,6 +23,8 @@ model User {
   items     Item[]
   missions  Mission[]
   transactions Transaction[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Household {
@@ -62,6 +65,7 @@ model Transaction {
 enum Role {
   MEMBER
   BANK
+  ADMIN
 }
 
 enum TransactionType {

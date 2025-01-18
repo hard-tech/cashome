@@ -30,7 +30,7 @@ export default function Home() {
 
         <div className="mt-6 flex flex-col">
           {['Transactions', 'Missions', 'Ventes'].map((feature) => (
-            <Card key={feature} className="m-2 p-4 text-black">
+            <Card key={feature} className="m-2 p-4">
               <h4>{feature}</h4>
               <p>Description de la fonctionnalité {feature}</p>
             </Card>

@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Providers } from "./providers";
-// import { Analytics } from '@vercel/analytics/react';
+import SessionWrapper from "@/components/SessionWrapper";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,14 +60,18 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
+  // icons: {
+  //   icon: "/favicon.ico",
+  //   shortcut: "/favicon-16x16.png",
+  //   apple: "/apple-touch-icon.png",
+  // },
   manifest: "/site.webmanifest",
-  themeColor: "#ffffff",
-  viewport: "width=device-width, initial-scale=1.0",
+  // themeColor: "#ffffff",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function RootLayout({
@@ -75,15 +80,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        // data-theme='blue-lightcr'
       >
-        <Providers>
-          {children}
-        </Providers>
-        {/* <Analytics /> */}
+        <SessionWrapper>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Providers>{children}</Providers>
+          </ThemeProvider>
+        </SessionWrapper>
       </body>
     </html>
   );
