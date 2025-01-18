@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cashome
 
-## Getting Started
+Cashome est une application web de gestion financière familiale permettant aux membres d'un foyer de gérer leurs transactions, missions et ventes d'articles entre eux.
 
-First, run the development server:
+## Fonctionnalités
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Gestion des utilisateurs avec différents rôles (Membre, Banque)
+- Création et gestion de foyers
+- Transactions financières internes
+- Création et accomplissement de missions rémunérées
+- Vente d'articles entre membres du foyer
+- Système de dépôt et retrait d'argent géré par le rôle "Banque"
+- Tableau de bord personnalisé pour chaque utilisateur
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies utilisées
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 13 avec App Router
+- TypeScript
+- Tailwind CSS
+- NextUI pour les composants UI
+- Prisma comme ORM
+- SQLite comme base de données
+- NextAuth.js pour l'authentification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Prérequis
 
-## Learn More
+- Node.js (version 14 ou supérieure)
+- npm ou yarn
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Clonez le dépôt :
+   ```
+   git clone https://github.com/votre-username/cashome.git
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. Naviguez dans le dossier du projet :
+   ```
+   cd cashome
+   ```
 
-## Deploy on Vercel
+3. Installez les dépendances :
+   ```
+   npm install
+   ```
+   ou
+   ```
+   yarn install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Configurez les variables d'environnement :
+   Copiez le fichier `.env.example` en `.env` et remplissez les variables nécessaires.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Exécutez les migrations Prisma :
+   ```
+   npx prisma migrate dev
+   ```
+
+6. Lancez le serveur de développement :
+   ```
+   npm run dev
+   ```
+   ou
+   ```
+   yarn dev
+   ```
+
+L'application devrait maintenant être accessible à l'adresse `http://localhost:3000`.
+
+## Structure du projet
+
+- `/src/app` : Pages et composants de l'application
+- `/src/components` : Composants réutilisables
+- `/src/lib` : Utilitaires et configurations
+- `/prisma` : Schéma et migrations de la base de données
+
+## Contribuer
+
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request.
+
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
