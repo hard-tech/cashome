@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(MEMBER)
+  balance   Float    @default(0)
+  household Household @relation(fields: [householdId], references: [id])
+  householdId Int
+  items     Item[]
+  missions  Mission[]
+  transactions Transaction[]
+}
+
+model Household {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Item {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  seller      User   @relation(fields: [sellerId], references: [id])
+  sellerId    Int
+}
+
+model Mission {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  reward      Float
+  deadline    DateTime
+  creator     User     @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  type      TransactionType
+  status    TransactionStatus @default(PENDING)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  MEMBER
+  BANK
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+enum TransactionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
