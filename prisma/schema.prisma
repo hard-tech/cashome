@@ -11,64 +11,124 @@ datasource db {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  username         String   @unique
-  password         String
-  firstName        String
-  lastName         String
-  role             Role     @default(MEMBER)
-  balance          Float    @default(0)
-  household        Household @relation(fields: [householdId], references: [id])
-  householdId      Int
-  items            Item[]
-  createdMissions  Mission[] @relation("CreatedMissions")
-  assignedMissions Mission[] @relation("AssignedMissions")
-  transactions     Transaction[]
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id                  Int            @id @default(autoincrement())
+  username            String         @unique
+  password            String
+  firstName           String
+  lastName            String
+  role                Role           @default(MEMBER)
+  balance             Float          @default(0)
+  household           Household      @relation(fields: [householdId], references: [id])
+  householdId         Int
+  
+  // Items relations
+  listedItems         Item[]         @relation("SellerItems")
+  purchasedItems      ItemPurchase[] @relation("BuyerPurchases")
+  
+  // Missions relations
+  createdMissions     Mission[]      @relation("CreatedMissions")
+  assignedMissions    Mission[]      @relation("AssignedMissions")
+  
+  // Transactions relations
+  sentTransactions    Transaction[]  @relation("SentTransactions")
+  receivedTransactions Transaction[] @relation("ReceivedTransactions")
+  
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@index([householdId])
 }
 
+model Household {
+  id        Int      @id @default(autoincrement())
+  name      String
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model Mission {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   title       String
   description String
   reward      Float
   deadline    DateTime
-  creator     User     @relation("CreatedMissions", fields: [creatorId], references: [id])
-  creatorId   Int
-  assignee    User?    @relation("AssignedMissions", fields: [assigneeId], references: [id])
-  assigneeId  Int?
   status      MissionStatus @default(OPEN)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
+  
+  creator     User          @relation("CreatedMissions", fields: [creatorId], references: [id])
+  creatorId   Int
+  assignee    User?         @relation("AssignedMissions", fields: [assigneeId], references: [id])
+  assigneeId  Int?
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
-model Household {
-  id    Int    @id @default(autoincrement())
-  name  String
-  users User[]
+  @@index([creatorId])
+  @@index([assigneeId])
 }
 
 model Item {
-  id          Int    @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   description String
   price       Float
-  seller      User   @relation(fields: [sellerId], references: [id])
+  quantity    Int            @default(1)
+  status      ItemStatus     @default(AVAILABLE)
+  
+  seller      User           @relation("SellerItems", fields: [sellerId], references: [id])
   sellerId    Int
+  purchases   ItemPurchase[]
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sellerId])
 }
 
+model ItemPurchase {
+  id         Int            @id @default(autoincrement())
+  quantity   Int
+  totalPrice Float
+  status     PurchaseStatus @default(PENDING)
+  
+  item       Item           @relation(fields: [itemId], references: [id])
+  itemId     Int
+  buyer      User           @relation("BuyerPurchases", fields: [buyerId], references: [id])
+  buyerId    Int
+  
+  transaction Transaction?  // Relation optionnelle avec la transaction associée
+  
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([itemId])
+  @@index([buyerId])
+}
 
 model Transaction {
-  id        Int      @id @default(autoincrement())
-  amount    Float
-  type      TransactionType
-  status    TransactionStatus @default(PENDING)
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  createdAt DateTime @default(now())
+  id          Int               @id @default(autoincrement())
+  amount      Float
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  description String?
+  
+  sender      User              @relation("SentTransactions", fields: [senderId], references: [id])
+  senderId    Int
+  receiver    User              @relation("ReceivedTransactions", fields: [receiverId], references: [id])
+  receiverId  Int
+  
+  itemPurchase ItemPurchase?    @relation(fields: [itemPurchaseId], references: [id])
+  itemPurchaseId Int?           @unique // Une transaction ne peut être liée qu'à un seul achat
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([itemPurchaseId])
 }
+
+
 
 enum MissionStatus {
   OPEN
@@ -86,10 +146,23 @@ enum Role {
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
+  SALE
+  PURCHASE
 }
 
 enum TransactionStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum ItemStatus {
+  AVAILABLE
+  SOLD_OUT
+}
+
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
 }

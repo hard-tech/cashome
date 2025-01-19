@@ -1,10 +1,13 @@
 import { Item, Mission, Transaction } from "@prisma/client"
 
 interface DashboardStats {
-    missions: Mission
-    items: Item
-    balance: number
-    transactions: Transaction
+    assignedMissions: Mission[];
+    createdMissions: Mission[];
+    listedItems: Item[];
+    purchasedItems: Item[];
+    balance: number;
+    sentTransactions: Transaction[];
+    receivedTransactions: Transaction[];
 }
 
 export type { DashboardStats }
