@@ -11,20 +11,37 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  firstName      String
-  lastName      String
-  role      Role     @default(MEMBER)
-  balance   Float    @default(0)
-  household Household @relation(fields: [householdId], references: [id])
-  householdId Int
-  items     Item[]
-  missions  Mission[]
-  transactions Transaction[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               Int      @id @default(autoincrement())
+  username         String   @unique
+  password         String
+  firstName        String
+  lastName         String
+  role             Role     @default(MEMBER)
+  balance          Float    @default(0)
+  household        Household @relation(fields: [householdId], references: [id])
+  householdId      Int
+  items            Item[]
+  createdMissions  Mission[] @relation("CreatedMissions")
+  assignedMissions Mission[] @relation("AssignedMissions")
+  transactions     Transaction[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+
+model Mission {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  reward      Float
+  deadline    DateTime
+  creator     User     @relation("CreatedMissions", fields: [creatorId], references: [id])
+  creatorId   Int
+  assignee    User?    @relation("AssignedMissions", fields: [assigneeId], references: [id])
+  assigneeId  Int?
+  status      MissionStatus @default(OPEN)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Household {
@@ -42,15 +59,6 @@ model Item {
   sellerId    Int
 }
 
-model Mission {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  reward      Float
-  deadline    DateTime
-  creator     User     @relation(fields: [creatorId], references: [id])
-  creatorId   Int
-}
 
 model Transaction {
   id        Int      @id @default(autoincrement())
@@ -60,6 +68,13 @@ model Transaction {
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime @default(now())
+}
+
+enum MissionStatus {
+  OPEN
+  ASSIGNED
+  COMPLETED
+  CANCELLED
 }
 
 enum Role {
